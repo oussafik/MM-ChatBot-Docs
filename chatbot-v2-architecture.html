@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Chatbot V2 Ecosystem Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F1F4F3; --surface:#FFFFFF; --surface-2:#E8EDEC; --ink:#15202A; --muted:#566570; --line:#C9D2D4; --line-soft:#DDE3E4;
+  --bot:#1D5BB8; --bot-tint:#E4EDFA; --ext:#A86512; --ext-tint:#FBF0DF; --plat:#3F6B5A; --plat-tint:#E2EEE8; --ent:#6A4E9A; --ent-tint:#EEE8F7;
+  --edge:#7D8C95; --hot:#D2361E; --hot-tint:#FCE6E1;
+  --sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0E1419; --surface:#161F27; --surface-2:#1D2831; --ink:#E3E9ED; --muted:#98A6B0; --line:#2F3C46; --line-soft:#24303A;
+    --bot:#7AA7F2; --bot-tint:#1A2A42; --ext:#E3A650; --ext-tint:#33261A; --plat:#7FB9A1; --plat-tint:#18302A; --ent:#B59BE3; --ent-tint:#2A2238;
+    --edge:#6B7B86; --hot:#FF7A5C; --hot-tint:#3A1F1A;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0E1419; --surface:#161F27; --surface-2:#1D2831; --ink:#E3E9ED; --muted:#98A6B0; --line:#2F3C46; --line-soft:#24303A;
+  --bot:#7AA7F2; --bot-tint:#1A2A42; --ext:#E3A650; --ext-tint:#33261A; --plat:#7FB9A1; --plat-tint:#18302A; --ent:#B59BE3; --ent-tint:#2A2238;
+  --edge:#6B7B86; --hot:#FF7A5C; --hot-tint:#3A1F1A;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;padding:0 20px 64px}
+.wrap{max-width:1360px;margin:0 auto}
+code,.mono{font-family:var(--mono);font-size:.86em}
+code{background:var(--surface-2);padding:1px 5px;border-radius:4px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.2}
+button{font:inherit;color:inherit}
+button:focus-visible,[tabindex]:focus-visible,select:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+
+/* header */
+header.top{padding-block:36px 20px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:end;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(28px,3.6vw,44px);font-weight:700;letter-spacing:-.02em;margin-top:8px}
+.lede{color:var(--muted);max-width:62ch;margin:12px 0 0}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:13px}
+.meta dt{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-top:2px}
+.meta dd{margin:0}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.mode{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.mode b{display:block;font-size:14px}
+.mode p{margin:4px 0 0;font-size:13.5px;color:var(--muted)}
+.mode.bot{border-top:3px solid var(--bot)} .mode.hum{border-top:3px solid var(--ext)}
+.keypoint{margin-top:16px;padding:12px 16px;background:var(--hot-tint);border-radius:8px;font-size:14px}
+.keypoint b{color:var(--hot)}
+
+/* nav */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);display:flex;gap:4px;overflow-x:auto;padding-block:10px;border-bottom:1px solid var(--line);margin-bottom:24px}
+nav.tabs button{background:none;border:1px solid transparent;border-radius:999px;padding:6px 14px;cursor:pointer;white-space:nowrap;font-size:14px;color:var(--muted)}
+nav.tabs button:hover{color:var(--ink);border-color:var(--line)}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+section.view{display:none} section.view.on{display:block}
+
+/* explorer */
+.explorer{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+.canvas-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line-soft)}
+.toolbar label{font-size:12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+select{font:inherit;font-size:14px;background:var(--surface-2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{background:none;border:0;padding:6px 10px;font-size:13px;cursor:pointer;color:var(--muted)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--ink);font-weight:600}
+.svgbox{overflow-x:auto}
+#arch{display:block;width:100%;min-width:880px;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;padding:10px 14px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+.ln{width:26px;height:0;border-top:2px solid var(--edge);display:inline-block}
+.ln.ln-d{border-top-style:dashed}
+
+/* svg */
+.zone rect{stroke-width:1}
+.zone text{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
+.z-bot rect{fill:var(--bot-tint);stroke:var(--bot)} .z-bot text{fill:var(--bot)}
+.z-ext rect{fill:var(--ext-tint);stroke:var(--ext);stroke-dasharray:5 4} .z-ext text{fill:var(--ext)}
+.z-plat rect{fill:var(--plat-tint);stroke:var(--plat)} .z-plat text{fill:var(--plat)}
+.z-ent rect{fill:var(--ent-tint);stroke:var(--ent)} .z-ent text{fill:var(--ent)}
+.z-exp rect{fill:var(--surface-2);stroke:var(--line)} .z-exp text{fill:var(--muted)}
+.node{cursor:pointer}
+.node .box{fill:var(--surface);stroke:var(--line);stroke-width:1.2;transition:stroke .15s,fill .15s}
+.node .t{font-family:var(--sans);font-weight:600;font-size:13.5px;fill:var(--ink)}
+.node .s{font-family:var(--sans);font-size:11px;fill:var(--muted)}
+.node:hover .box{stroke:var(--ink)}
+.node.sel .box{stroke:var(--ink);stroke-width:2.4}
+.node.hot .box{stroke:var(--hot);stroke-width:2.4;fill:var(--hot-tint)}
+.edge path.v{fill:none;stroke:var(--edge);stroke-width:1.6;transition:stroke .15s,opacity .15s}
+.edge.dash path.v{stroke-dasharray:6 5}
+.edge path.hit{fill:none;stroke:transparent;stroke-width:14;cursor:pointer}
+.edge:hover path.v{stroke:var(--ink)}
+.edge.hot path.v{stroke:var(--hot);stroke-width:2.6}
+.edge.sel path.v{stroke:var(--ink);stroke-width:2.6}
+.edge text{font-family:var(--mono);font-size:10px;fill:var(--muted);pointer-events:none}
+.edge.hot text{fill:var(--hot)}
+.dim{opacity:.22}
+.arrow{fill:var(--edge)} .arrow-hot{fill:var(--hot)} .arrow-sel{fill:var(--ink)}
+@keyframes flow{to{stroke-dashoffset:-22}}
+.edge.hot:not(.dash) path.v{stroke-dasharray:8 3;animation:flow .9s linear infinite}
+@media (prefers-reduced-motion:reduce){.edge.hot path.v{animation:none}}
+
+/* scenario strip */
+.scen{padding:14px;border-top:1px solid var(--line-soft);display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;background:var(--surface-2)}
+.scen .n{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.scen .n b{font-size:22px;color:var(--hot);display:block;line-height:1}
+.scen p{margin:0;font-size:14.5px}
+.scen .ctrl{display:flex;gap:6px}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13.5px}
+.btn:hover{border-color:var(--ink)}
+.btn.pri{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.dots{display:flex;gap:4px;flex-wrap:wrap;padding:0 14px 12px;background:var(--surface-2)}
+.dots button{width:22px;height:6px;border-radius:3px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dots button.on{background:var(--hot)}
+
+/* panel */
+aside.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 72px);max-height:calc(100vh - 96px);overflow:auto}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid currentColor}
+.c-bot{color:var(--bot)} .c-ext{color:var(--ext)} .c-plat{color:var(--plat)} .c-ent{color:var(--ent)} .c-exp{color:var(--muted)} .c-hot{color:var(--hot)}
+.panel h2{font-size:22px;margin:12px 0 6px}
+.panel .sum{color:var(--muted);margin:0 0 14px;font-size:14.5px}
+.panel h3{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px;font-weight:500}
+.panel ul{margin:0;padding-left:18px} .panel li{margin:3px 0;font-size:14px}
+.panel .warn li::marker{color:var(--hot)}
+.panel .files{list-style:none;padding:0} .panel .files li{font-family:var(--mono);font-size:12px;padding:3px 0;border-bottom:1px dashed var(--line-soft)}
+.panel pre{background:var(--surface-2);border-radius:8px;padding:10px 12px;font-family:var(--mono);font-size:12px;overflow-x:auto;margin:0;line-height:1.5}
+.linkrow{display:flex;flex-wrap:wrap;gap:6px}
+.linkrow button{background:var(--surface-2);border:1px solid var(--line-soft);border-radius:6px;padding:3px 8px;font-size:12.5px;cursor:pointer}
+.linkrow button:hover{border-color:var(--ink)}
+.hint{font-size:13px;color:var(--muted)}
+
+/* generic sections */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px}
+.card h2{font-size:20px;margin-bottom:6px}
+.card>p{color:var(--muted);margin:0 0 14px;font-size:14.5px}
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+td:first-child{white-space:nowrap}
+
+/* router sim */
+.sim{display:grid;gap:14px}
+.sim .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sim .row>span{min-width:130px;font-family:var(--mono);font-size:12.5px}
+.result{border-radius:10px;padding:16px;border:2px solid var(--line)}
+.result .r{font-family:var(--mono);font-size:17px;font-weight:500}
+.result p{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.result.bot{border-color:var(--bot);background:var(--bot-tint)} .result.bot .r{color:var(--bot)}
+.result.zd{border-color:var(--ext);background:var(--ext-tint)} .result.zd .r{color:var(--ext)}
+.result.ro{border-color:var(--line);background:var(--surface-2)}
+.result.rec{border-color:var(--hot);background:var(--hot-tint)} .result.rec .r{color:var(--hot)}
+.sources{display:grid;gap:10px}
+.src{border-left:3px solid var(--line);padding:4px 0 4px 12px}
+.src b{display:block;font-size:14px}.src span{font-size:13.5px;color:var(--muted)}
+.src.no{border-left-color:var(--hot)}
+
+/* state machine */
+#sm{display:block;width:100%;min-width:760px;height:auto}
+.st{cursor:pointer}
+.st rect{fill:var(--surface);stroke:var(--line);stroke-width:1.4}
+.st text{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--ink)}
+.st.term rect{stroke:var(--ink);stroke-width:2}
+.st.extst rect{stroke:var(--ext);stroke-dasharray:5 4;fill:var(--ext-tint)}
+.st.sel rect{stroke:var(--hot);stroke-width:2.4;fill:var(--hot-tint)}
+.tr path{fill:none;stroke:var(--edge);stroke-width:1.5}
+.tr text{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+.tr.hot path{stroke:var(--hot);stroke-width:2.4} .tr.hot text{fill:var(--hot)}
+.sm-detail{margin-top:16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.facts li{margin:6px 0}
+
+/* api */
+.eplist{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.eplist button{font-family:var(--mono);font-size:13px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+.eplist button[aria-pressed="true"]{background:var(--bot);border-color:var(--bot);color:var(--surface)}
+.ep{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ep div h4{margin:0 0 6px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.ep div p{margin:0;font-size:14px}
+.sse{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.ev{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--surface)}
+.ev code{background:none;padding:0;font-weight:500;color:var(--bot);font-size:13px}
+.ev.k code{color:var(--hot)}
+.ev p{margin:6px 0 0;font-size:13.5px}
+.ev small{display:block;color:var(--muted);font-size:12.5px;margin-top:4px}
+
+/* data */
+.tables{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.tbl{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer;text-align:left;padding:0}
+.tbl.sel{border-color:var(--hot);box-shadow:0 0 0 1px var(--hot)}
+.tbl .h{font-family:var(--mono);font-size:12px;font-weight:500;padding:9px 12px;background:var(--plat-tint);color:var(--plat);display:block}
+.tbl ul{list-style:none;margin:0;padding:8px 12px 10px}
+.tbl li{font-family:var(--mono);font-size:11.5px;display:flex;justify-content:space-between;gap:8px;padding:2px 0;color:var(--ink)}
+.tbl li i{font-style:normal;color:var(--muted)}
+.tbl li.pk span::after{content:" PK";color:var(--hot);font-size:10px}
+.tbl li.fk span{color:var(--plat)}
+
+/* decisions */
+.dec{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.d{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.d .num{font-family:var(--mono);font-size:12px;color:var(--hot)}
+.d h3{font-size:16px}
+.d p{margin:0;font-size:14px;color:var(--muted)}
+.d .who{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ext);margin-top:auto;padding-top:6px}
+.limits{columns:2;column-gap:32px;margin:0;padding-left:18px}
+.limits li{break-inside:avoid;margin:0 0 8px;font-size:14.5px}
+
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+
+@media (max-width:1080px){
+  .explorer{grid-template-columns:1fr}
+  aside.panel{position:static;max-height:none}
+}
+@media (max-width:760px){
+  body{padding:0 16px 48px}
+  header.top{grid-template-columns:1fr}
+  .modes,.grid2,.sm-detail,.ep{grid-template-columns:1fr}
+  .limits{columns:1}
+  .scen{grid-template-columns:auto 1fr}
+  .scen .ctrl{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <div class="eyebrow">Architecture review · Marjanemall customer service</div>
+    <h1>Chatbot V2 Conversational Service &amp; Human Handoff</h1>
+    <p class="lede">One customer experience, two consecutive service modes. Click any component on the map to see what it owns, or play a scenario to watch a request travel through the system.</p>
+    <div class="modes">
+      <div class="mode bot"><b>1 · Automated mode</b><p>Frontend → Dev Backend → Chatbot V2. The chatbot owns the conversation, AI reasoning, commerce actions, transcript and the ticket decision.</p></div>
+      <div class="mode hum"><b>2 · Human mode</b><p>After a ticket is created, the bot conversation closes for good. The Dev Backend routes the customer to Zendesk, where a human agent takes over.</p></div>
+    </div>
+  </div>
+  <div>
+    <dl class="meta">
+      <dt>Scope</dt><dd>V2 chatbot APIs, plus the surrounding Frontend, Dev Backend, enterprise APIs, data stores and Zendesk handoff</dd>
+      <dt>Status</dt><dd>Current-state code review with explicit external-system boundaries</dd>
+      <dt>Prepared</dt><dd>25 September 2026</dd>
+    </dl>
+    <div class="keypoint"><b>Key boundary.</b> The chatbot does not integrate directly with Zendesk. It calls a generic enterprise ticket endpoint and exposes the ticket ID. Zendesk messaging, status sync and the human transcript live outside this codebase.</div>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Sections">
+  <button role="tab" data-view="map" aria-selected="true">System map</button>
+  <button role="tab" data-view="routing" aria-selected="false">Routing</button>
+  <button role="tab" data-view="lifecycle" aria-selected="false">Lifecycle</button>
+  <button role="tab" data-view="api" aria-selected="false">API contract</button>
+  <button role="tab" data-view="data" aria-selected="false">Data model</button>
+  <button role="tab" data-view="decisions" aria-selected="false">Decisions &amp; gaps</button>
+  <button role="tab" data-view="evidence" aria-selected="false">Code evidence</button>
+</nav>
+
+<!-- MAP -->
+<section class="view on" id="v-map">
+  <div class="explorer">
+    <div class="canvas-card">
+      <div class="toolbar">
+        <label for="scenario">Scenario</label>
+        <select id="scenario"></select>
+        <label>Highlight</label>
+        <div class="seg" id="filter">
+          <button aria-pressed="true" data-f="all">Everything</button>
+          <button aria-pressed="false" data-f="repo">In this repo</button>
+          <button aria-pressed="false" data-f="out">Outside repo</button>
+        </div>
+      </div>
+      <div class="svgbox"><svg id="arch" viewBox="0 0 1240 760" role="img" aria-label="End-to-end system map"></svg></div>
+      <div class="scen" id="scen" hidden>
+        <div class="n"><b id="sn">1</b>of <span id="st">1</span></div>
+        <p id="stext"></p>
+        <div class="ctrl">
+          <button class="btn" id="prev">Back</button>
+          <button class="btn pri" id="next">Next step</button>
+          <button class="btn" id="play">Play</button>
+        </div>
+      </div>
+      <div class="dots" id="dots" hidden></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--bot)"></i>Chatbot V2 (this repo)</span>
+        <span><i class="sw" style="background:var(--ext)"></i>Outside this repo</span>
+        <span><i class="sw" style="background:var(--plat)"></i>AI &amp; persistence</span>
+        <span><i class="sw" style="background:var(--ent)"></i>Enterprise services</span>
+        <span><i class="ln"></i>Verified in code</span>
+        <span><i class="ln ln-d"></i>Product-supplied or to confirm</span>
+      </div>
+    </div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+</section>
+
+<!-- ROUTING -->
+<section class="view" id="v-routing">
+  <div class="grid2">
+    <div class="card">
+      <h2>Routing simulator</h2>
+      <p>The Dev Backend decides where a selected conversation opens. Set the conversation's state to see which route it takes.</p>
+      <div class="sim">
+        <div class="row"><span>closed</span><div class="seg" id="r-closed"><button data-v="false" aria-pressed="true">false</button><button data-v="true" aria-pressed="false">true</button></div></div>
+        <div class="row"><span>closed_reason</span><select id="r-reason"><option value="null">null</option><option value="inactivity">inactivity</option><option value="ticket_created">ticket_created</option></select></div>
+        <div class="row"><span>ticket.ticket_id</span><div class="seg" id="r-tid"><button data-v="yes" aria-pressed="true">present</button><button data-v="no" aria-pressed="false">missing</button></div></div>
+        <div class="result" id="r-out"></div>
+      </div>
+      <h3 class="eyebrow" style="margin:20px 0 8px">Rule as implemented by the Dev Backend</h3>
+<pre class="mono" style="background:var(--surface-2);padding:12px;border-radius:8px;overflow-x:auto;margin:0;font-size:12.5px">if conversation.closed_reason == "ticket_created":
+    route = ZENDESK if conversation.ticket.ticket_id exists
+            else HANDOFF_RECONCILIATION
+elif conversation.closed is true:
+    route = READ_ONLY_BOT_HISTORY
+else:
+    route = CHATBOT_V2</pre>
+    </div>
+    <div class="card">
+      <h2>Where the route signal comes from</h2>
+      <p>Three reads can tell the Dev Backend the route. Only two carry enough information.</p>
+      <div class="sources">
+        <div class="src"><b>Live turn</b><span><code>conversation_closed</code> SSE event with <code>reason = "ticket_created"</code>.</span></div>
+        <div class="src"><b>Conversation list / reload</b><span><code>closed</code>, <code>closed_reason</code> and <code>ticket</code> from <code>/api/v2/conversations</code>. This is the authoritative read.</span></div>
+        <div class="src no"><b>History only: not enough</b><span><code>/api/v2/history</code> returns <code>closed</code> but no <code>closed_reason</code> or ticket, so it cannot separate inactivity from a Zendesk handoff.</span></div>
+      </div>
+      <h3 class="eyebrow" style="margin:22px 0 8px">Display reference</h3>
+<pre class="mono" style="background:var(--surface-2);padding:12px;border-radius:8px;overflow-x:auto;margin:0;font-size:12.5px">display_reference = conversation.ticket.ticket_id ?? conversation.conversation_ref</pre>
+      <p class="hint" style="margin-top:8px">Keep <code>conversation_ref</code> as the fallback even when a <code>ticket</code> object exists: the ticket API can report success with a payload from which no scalar ID can be extracted.</p>
+      <h3 class="eyebrow" style="margin:22px 0 8px">"New conversation" is a client action</h3>
+      <ol style="margin:0;padding-left:20px;font-size:14px">
+        <li>Frontend clears the selected <code>session_id</code>.</li>
+        <li>First message goes to <code>POST /api/v2/chat</code> without <code>session_id</code>.</li>
+        <li>Chatbot creates the session and an eight-digit <code>conversation_ref</code>.</li>
+        <li>First SSE event is <code>session</code>; retain it before allowing another message.</li>
+      </ol>
+      <p class="hint" style="margin-top:8px">No endpoint creates an empty conversation, so abandoned empty threads never accumulate.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LIFECYCLE -->
+<section class="view" id="v-lifecycle">
+  <div class="card">
+    <h2>Conversation state model</h2>
+    <p>Click a state to see how it is entered and left. Dashed states are owned by Zendesk, outside this repository.</p>
+    <div class="svgbox"><svg id="sm" viewBox="0 0 1000 340" role="img" aria-label="Conversation state machine"></svg></div>
+    <div class="sm-detail">
+      <div id="sm-info"></div>
+      <div>
+        <h3 class="eyebrow" style="margin-bottom:8px">Lifecycle rules</h3>
+        <ul class="facts" style="margin:0;padding-left:18px;font-size:14px">
+          <li>Default inactivity threshold is <b>40 minutes</b>. Closure is lazy: it is checked on a later <code>/chat</code>, <code>/history</code>, <code>/history/by-reference</code> or <code>/conversations</code> call for that customer.</li>
+          <li>Inactivity is measured from the last stored V2 turn, not page reads, so polling cannot keep an abandoned conversation alive.</li>
+          <li>A closed bot conversation cannot be reopened through V2. A new topic starts a new session.</li>
+          <li>Zendesk ticket closure does not touch the bot session. It became terminal the moment the ticket was created.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <h2>Ticket outcomes</h2>
+    <p>The chatbot closes only after the create-ticket API reports success. A failure or a customer "no" keeps the automated conversation open.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Outcome</th><th>Bot session</th><th>V2 signal</th><th>Routing consequence</th></tr></thead>
+      <tbody>
+        <tr><td><code>created</code></td><td>Closed permanently with <code>ticket_created</code></td><td><code>conversation_closed</code>, then <code>end</code></td><td>Dev Backend routes to Zendesk</td></tr>
+        <tr><td><code>declined</code></td><td>Remains open</td><td>Normal response / end</td><td>Stay on chatbot</td></tr>
+        <tr><td><code>failed</code></td><td>Remains open</td><td>Normal response / end; agent can explain</td><td>Stay on chatbot; a support alternative may be offered</td></tr>
+        <tr><td><code>missing_info</code></td><td>Remains open</td><td>Agent retries with corrected subject/body</td><td>Stay on chatbot</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- API -->
+<section class="view" id="v-api">
+  <div class="card">
+    <h2>V2 endpoints</h2>
+    <p>All routes are <code>POST</code>, take plain JSON and live under <code>/api/v2</code>. The Frontend reaches them only through the Dev Backend.</p>
+    <div class="eplist" id="eplist"></div>
+    <div class="ep" id="ep"></div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <h2><code style="background:none;padding:0;font-size:inherit">/chat</code> SSE events</h2>
+    <p>What the Dev Backend and Frontend must do with each streamed event. Highlighted events drive routing and session handling.</p>
+    <div class="sse" id="sse"></div>
+  </div>
+  <div class="grid2" style="margin-top:20px">
+    <div class="card">
+      <h2>Keep identifiers distinct</h2>
+      <p>Five IDs, five audiences.</p>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Identifier</th><th>Audience</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>customer_reference</code></td><td>Service-to-service</td><td>Customer scoping, rate limits, tool lookups, session ownership</td></tr>
+          <tr><td><code>session_id</code></td><td>Technical</td><td>Chatbot/LangGraph thread key; API address of one bot conversation</td></tr>
+          <tr><td><code>conversation_ref</code></td><td>Customer, support staff</td><td>Short eight-digit reference for every V2 conversation</td></tr>
+          <tr><td><code>ticket_id</code></td><td>Dev Backend, Zendesk, support</td><td>Human-service case key returned after ticket creation</td></tr>
+          <tr><td><code>turn_id</code></td><td>Frontend, chatbot</td><td>ID of an assistant turn, used by <code>/feedback</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h2><code style="background:none;padding:0;font-size:inherit">/conversations</code> item</h2>
+      <p>The shape the Frontend list and reload-time routing rely on.</p>
+<pre class="mono" style="background:var(--surface-2);padding:12px;border-radius:8px;overflow-x:auto;margin:0;font-size:12px;line-height:1.55">{
+  "session_id": "technical bot-thread identifier",
+  "conversation_ref": "48217395",
+  "last_message": "One-line preview, ~60 characters...",
+  "last_message_at": "timestamp",
+  "created_at": "timestamp",
+  "closed": true,
+  "closed_at": "timestamp",
+  "closed_reason": "ticket_created",
+  "ticket": {
+    "ticket_id": "Zendesk/integration ticket ref or null",
+    "outcome": "created",
+    "created_at": "timestamp",
+    "reference_message": "message returned by the ticket API"
+  }
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- DATA -->
+<section class="view" id="v-data">
+  <div class="card">
+    <h2>PostgreSQL persistence</h2>
+    <p>Click a table to see its role. Every table links to <code>chat_customer_sessions</code> by <code>session_id</code>. These are logical relationships: the DDL declares no foreign keys between them.</p>
+    <div class="tables" id="tables"></div>
+    <div id="tinfo" style="margin-top:16px"></div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <h2>Source of truth after handoff</h2>
+    <p>The Dev Backend should keep a durable mapping of <code>session_id</code> / <code>conversation_ref</code> to <code>ticket_id</code>, or rebuild it from <code>/conversations</code>. That mapping is the seam between the two systems of record.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Data</th><th>Authoritative source</th><th>Owner</th></tr></thead>
+      <tbody>
+        <tr><td>Bot conversation identity and closed state</td><td><code>chat_customer_sessions</code></td><td><span class="chip c-bot">Chatbot</span></td></tr>
+        <tr><td>Bot messages and cards</td><td><code>chat_turn_analytics</code></td><td><span class="chip c-bot">Chatbot</span></td></tr>
+        <tr><td>AI checkpoint and pending confirmation</td><td>LangGraph checkpoint tables</td><td><span class="chip c-bot">Chatbot</span></td></tr>
+        <tr><td>Ticket creation result</td><td><code>ticket_events</code></td><td><span class="chip c-bot">Chatbot</span></td></tr>
+        <tr><td>Human messages and agent activity</td><td>Zendesk</td><td><span class="chip c-ext">Outside repo</span></td></tr>
+        <tr><td>Final CRM ticket status</td><td>Zendesk</td><td><span class="chip c-ext">Outside repo</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- DECISIONS -->
+<section class="view" id="v-decisions">
+  <h2 style="font-size:22px;margin-bottom:6px">Decisions needed before production integration</h2>
+  <p class="hint" style="margin:0 0 16px">Seven open questions. Each links back to the part of the system it affects.</p>
+  <div class="dec" id="dec"></div>
+  <div class="card" style="margin-top:24px">
+    <h2>Boundary limitations to communicate</h2>
+    <p>What the current codebase does not do, stated plainly.</p>
+    <ul class="limits">
+      <li>No direct Zendesk SDK or API call exists in this repository.</li>
+      <li>No V2 endpoint receives Zendesk messages or ticket-status events.</li>
+      <li><code>/history</code> holds only chatbot messages and a Boolean <code>closed</code>; no ticket or close reason.</li>
+      <li><code>/conversations</code> is the authoritative V2 read for list display and reload-time routing.</li>
+      <li>Ticket creation closes the bot conversation immediately; Zendesk ticket closure is a later, separate event.</li>
+      <li>Conversations closed for inactivity must not be routed to Zendesk.</li>
+      <li>All of a customer's conversations share rate-limit state, because limits are keyed by <code>customer_reference</code>, not <code>session_id</code>.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- EVIDENCE -->
+<section class="view" id="v-evidence">
+  <div class="grid2">
+    <div class="card">
+      <h2>Code locations</h2>
+      <p>Where each concern is implemented.</p>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Concern</th><th>Primary location</th></tr></thead>
+        <tbody id="evid"></tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h2>How each claim is classified</h2>
+      <p>The map uses solid lines for verified behavior and dashed lines for the rest.</p>
+      <div class="sources">
+        <div class="src" style="border-left-color:var(--bot)"><b>Code-verified</b><span>All V2 behavior, schemas, SSE events, PostgreSQL persistence, LLM and tools, enterprise HTTP calls, and closure rules.</span></div>
+        <div class="src" style="border-left-color:var(--ext)"><b>Product-supplied / outside repository</b><span>Frontend-to-Dev-Backend-only access, Dev Backend routing into Zendesk, human messaging through Zendesk, and human-agent ticket closure.</span></div>
+        <div class="src no"><b>To confirm in deployment</b><span>Whether the generic enterprise ticket endpoint is physically part of the Dev Backend, and the exact connector between that endpoint and Zendesk.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>Source: V2 Chatbot Ecosystem Architecture review, prepared 25 September 2026. Interactive edition of the same content.</footer>
+</div>
+
+<script>
+(function(){
+const NS="http://www.w3.org/2000/svg";
+const $=s=>document.querySelector(s);
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+
+/* ---------- DATA ---------- */
+const ZONES=[
+ {x:180,y:220,w:190,h:230,cls:"z-exp",label:"Experience layer"},
+ {x:390,y:50,w:230,h:430,cls:"z-ext",label:"Orchestration · outside repo"},
+ {x:640,y:50,w:360,h:430,cls:"z-bot",label:"Chatbot V2 service · this repo"},
+ {x:1020,y:50,w:200,h:430,cls:"z-plat",label:"AI & persistence"},
+ {x:640,y:510,w:580,h:230,cls:"z-ent",label:"Enterprise services"},
+ {x:180,y:510,w:440,h:230,cls:"z-ext",label:"Human-service mode · outside repo"}
+];
+const ZN={bot:["c-bot","Chatbot V2 · this repo"],ext:["c-ext","Outside this repo"],plat:["c-plat","AI & persistence"],ent:["c-ent","Enterprise services"],exp:["c-exp","Experience layer"]};
+const EV={v:["c-bot","Code-verified"],p:["c-ext","Product-supplied"],c:["c-hot","To confirm"]};
+
+const NODES={
+ u:{x:30,y:305,w:120,h:60,shape:"pill",t:"Customer",s:"App or web user",zone:"exp",ev:"p",
+  sum:"Sees one continuous experience, even though the conversation moves from the bot to a human agent.",
+  owns:["Starts conversations, confirms actions, rates and gives feedback","Talks to the bot first, then to a human after a ticket is created"],
+  links:["fe"]},
+ fe:{x:195,y:285,w:160,h:100,t:"App / Web Frontend",s:"List · bot chat · human chat",zone:"exp",ev:"p",
+  sum:"Thin integration layer. It never calls the chatbot or Zendesk directly; every request goes through the Dev Backend.",
+  owns:["Conversation list and chat UI","Rendering order, return and refund cards","Confirmation controls for cancel, return and ticket","Locked or open composer state","Human-chat UI after handoff"],
+  rules:["Show display_reference = ticket.ticket_id ?? conversation_ref","“New conversation” just clears the selected session_id; there is no API for it"],
+  links:["dev","route"]},
+ dev:{x:410,y:105,w:190,h:100,t:"Dev Backend / BFF",s:"Identity · routing · SSE",zone:"ext",ev:"p",
+  sum:"The channel router. It holds the customer's identity, proxies the chatbot and decides whether a conversation is still automated or has moved to Zendesk.",
+  owns:["Authentication context and a trusted customer_reference","Proxy to the chatbot V2 APIs","Forwarding SSE without buffering","Retaining the selected session_id","Routing between bot and Zendesk","Aggregating bot and CRM views","Durable mapping of session_id / conversation_ref → ticket_id"],
+  gaps:["Must supply an authenticated customer_reference; V2 has no service auth","Human-channel contract (send, receive, transcript, closed status) is not yet defined"],
+  links:["route","v2","zd","fe"]},
+ route:{x:425,y:285,w:160,h:110,shape:"diamond",t:"Route selected",s:"conversation",zone:"ext",ev:"p",
+  sum:"Decision the Dev Backend makes every time a conversation is opened or a turn ends.",
+  code:'if closed_reason == "ticket_created":\n    ZENDESK if ticket_id else\n    HANDOFF_RECONCILIATION\nelif closed:\n    READ_ONLY_BOT_HISTORY\nelse:\n    CHATBOT_V2',
+  rules:["A missing ticket_id is a reconciliation case, never a reason to send the customer back to the closed bot conversation","/history alone cannot decide the route; use /conversations or the live SSE event"],
+  links:["v2","zd"]},
+ v2:{x:660,y:85,w:320,h:62,t:"FastAPI V2 boundary",s:"POST /api/v2/*",zone:"bot",ev:"v",
+  sum:"Public surface of the chatbot. Six POST routes, plain JSON in, JSON or SSE out.",
+  owns:["/chat · start or continue a conversation (SSE)","/history · one bot transcript","/history/by-reference · recover the latest session","/conversations · list with routing metadata","/feedback · like / dislike a turn","/rating · 1–10 rating of a conversation"],
+  gaps:["Config allows broad CORS and no service-auth middleware is visible; keep it private or add service-to-service auth"],
+  files:["app/api/v2/endpoints/chat.py","app/schemas/api_v2.py","app/schemas/api.py"],
+  links:["core","dev"],tab:"api"},
+ core:{x:660,y:185,w:320,h:72,t:"Conversation + guard services",s:"Session ownership · limits · streaming",zone:"bot",ev:"v",
+  sum:"Checks every request before the agent sees it, owns the session lifecycle and assembles the SSE stream.",
+  owns:["Length, rate, abuse and prompt-leak guards","Session ownership check against customer_reference","Lazy inactivity closure (default 40 min)","Creating sessions and the eight-digit conversation_ref","SSE assembly: tokens, cards, confirmations, closure"],
+  rules:["Rate limits are keyed by customer_reference, so all of a customer's conversations share one budget","Closure is evaluated on the next /chat, /history, /history/by-reference or /conversations call"],
+  files:["app/services/chat_stream.py","app/database/rate_limit.py"],
+  links:["agent","hist","pg"],tab:"lifecycle"},
+ hist:{x:660,y:295,w:150,h:95,t:"History + list",s:"Transcripts · list",zone:"bot",ev:"v",
+  sum:"Projects stored turns into transcripts and the conversation list the Frontend shows.",
+  owns:["/history: bot messages plus Boolean closed","/history/by-reference: latest conversation, never creates one","/conversations: newest first, ~60-char preview, closed_reason and ticket metadata (limit 1–200, default 50)"],
+  gaps:["/history does not return closed_reason or ticket; it cannot tell inactivity from handoff"],
+  files:["app/services/history.py"],
+  links:["core","pg"]},
+ agent:{x:830,y:295,w:150,h:95,t:"LangGraph agent",s:"Tools · confirmations",zone:"bot",ev:"v",
+  sum:"State machine that talks to the LLM, calls commerce tools and pauses for customer confirmation before any action.",
+  owns:["Read tools: recent and older orders, details, tracking, delivery, search, returns, refunds","Delivery-policy answers","Confirmed actions: cancel one order line, create one return, create a support ticket","Structured card payloads for the Frontend"],
+  rules:["Confirmation resumes only when the value is “Yes”","Ticket outcomes: created → close session; declined, failed, missing_info → stay open"],
+  files:["app/agent/graph.py","app/agent/tools/tools.py","app/agent/tools/data_source/"],
+  links:["llm","pg","api","sql"]},
+ pg:{x:1040,y:95,w:160,h:120,shape:"cyl",t:"PostgreSQL",s:"Bot-phase store",zone:"plat",ev:"v",
+  sum:"Single store for the bot phase: sessions, LangGraph checkpoints, transcript, tickets, ratings, feedback escalations, action audit and rate-limit state.",
+  owns:["chat_customer_sessions","chat_turn_analytics","ticket_events","chat_session_ratings","feedback_ticket_escalations","external_api_events","LangGraph checkpoints","chat_rate_limit_buckets"],
+  rules:["Relationships are logical; the DDL declares no foreign keys"],
+  files:["app/database/bi_store.py","app/main.py"],
+  links:["core","agent"],tab:"data"},
+ llm:{x:1040,y:300,w:160,h:80,t:"Azure OpenAI",s:"Primary + fallbacks",zone:"plat",ev:"v",
+  sum:"Language model behind the agent, with configured fallback deployments when the primary fails.",
+  owns:["Receives conversation context and the available tools","Returns answers and tool calls, e.g. create_support_ticket(subject, body)"],
+  files:["app/agent/llm_factory.py"],links:["agent"]},
+ api:{x:660,y:560,w:220,h:80,t:"Enterprise Integration API",s:"Reads · cancel · return · ticket",zone:"ent",ev:"v",
+  sum:"Production dependency at EXTERNAL_API_BASE_URL. Serves commerce reads, cancel and return actions, and the create-ticket adapter.",
+  owns:["Production reads: /api/chatai/v1/… (v1 is the enterprise API's version, not the chatbot's)","Ticket: POST /api/order/v1/postticket.json","Payload: customer_reference, subject + [REF:…], body","Response: success, data = ticket_id, message"],
+  gaps:["Hosting not provable from the repo: it may be the Dev Backend","Synchronous call with no idempotency key; timeouts risk duplicate tickets or unknown success","Connector to Zendesk still to confirm"],
+  links:["com","zd","agent"]},
+ com:{x:660,y:665,w:220,h:55,t:"Commerce / Order systems",s:"",zone:"ent",ev:"v",
+  sum:"Back-office systems behind the Enterprise Integration API.",owns:["Orders, deliveries, returns and refunds"],links:["api"]},
+ sql:{x:920,y:575,w:180,h:90,shape:"cyl",t:"SQL Server",s:"Non-production reads",zone:"ent",ev:"v",
+  sum:"Direct read path used outside production instead of the enterprise HTTP APIs.",
+  owns:["Read tools only: no actions go through SQL"],files:["app/agent/tools/data_source/"],links:["agent"]},
+ zd:{x:400,y:565,w:200,h:90,t:"Zendesk CRM",s:"Human ticket · transcript",zone:"ext",ev:"p",
+  sum:"System of record for the human phase. Nothing in the chatbot repo talks to it directly.",
+  owns:["Human-owned ticket and agent assignment","Human messages and transcript","Final ticket status and closure"],
+  gaps:["No Zendesk SDK/API call in this repo","No V2 endpoint receives Zendesk messages or status events","Unified bot + human timeline is undecided"],
+  links:["ha","dev","api"],tab:"decisions"},
+ ha:{x:200,y:580,w:150,h:60,shape:"pill",t:"Human agent",s:"Support team",zone:"ext",ev:"p",
+  sum:"Answers the customer inside Zendesk and closes the ticket when resolved.",owns:["Replies to the customer","Closes the ticket"],links:["zd"]}
+};
+
+const EDGES=[
+ {id:"u-fe",a:"u",b:"fe",d:"M150 335 L195 335",ev:"p",l:"Uses app / web"},
+ {id:"fe-dev",a:"fe",b:"dev",d:"M355 315 C385 315 380 150 410 150",ev:"p",l:"All client requests",two:true},
+ {id:"dev-v2",a:"dev",b:"v2",d:"M600 125 L660 106",ev:"v",l:"list · history · chat"},
+ {id:"v2-dev",a:"v2",b:"dev",d:"M660 132 L600 170",ev:"v",l:"JSON / SSE"},
+ {id:"dev-route",a:"dev",b:"route",d:"M505 205 L505 285",ev:"p",l:"Route decision"},
+ {id:"route-v2",a:"route",b:"v2",d:"M585 340 C630 340 628 150 662 142",ev:"p",l:"open bot conversation"},
+ {id:"route-zd",a:"route",b:"zd",d:"M505 395 L505 565",ev:"p",l:"ticket_created",lx:512,ly:480,dash:true},
+ {id:"dev-zd",a:"dev",b:"zd",d:"M410 185 C375 185 378 590 400 595",ev:"p",l:"human messages · status",lx:300,ly:470,dash:true,two:true},
+ {id:"v2-core",a:"v2",b:"core",d:"M820 147 L820 185",ev:"v",l:"handler → services"},
+ {id:"core-hist",a:"core",b:"hist",d:"M735 257 L735 295",ev:"v",l:"projection"},
+ {id:"core-agent",a:"core",b:"agent",d:"M905 257 L905 295",ev:"v",l:"invoke graph"},
+ {id:"core-pg",a:"core",b:"pg",d:"M980 212 L1040 170",ev:"v",l:"sessions · limits",two:true},
+ {id:"hist-pg",a:"hist",b:"pg",d:"M735 390 C735 440 1000 450 1050 214",ev:"v",l:"read turns",lx:760,ly:450},
+ {id:"agent-pg",a:"agent",b:"pg",d:"M980 315 C1010 315 1012 205 1040 200",ev:"v",l:"checkpoints · turns",two:true},
+ {id:"agent-llm",a:"agent",b:"llm",d:"M980 350 L1040 342",ev:"v",l:"context + tools",two:true},
+ {id:"agent-api",a:"agent",b:"api",d:"M880 390 C880 480 790 490 780 560",ev:"v",l:"prod reads · actions · ticket",lx:810,ly:500},
+ {id:"agent-sql",a:"agent",b:"sql",d:"M960 390 C960 480 1010 500 1010 575",ev:"v",l:"non-prod reads",lx:1002,ly:500},
+ {id:"api-com",a:"api",b:"com",d:"M770 640 L770 665",ev:"v",l:""},
+ {id:"api-zd",a:"api",b:"zd",d:"M660 605 L600 605",ev:"c",l:"connector?",lx:604,ly:596,dash:true},
+ {id:"zd-ha",a:"zd",b:"ha",d:"M400 612 L350 612",ev:"p",l:"",two:true}
+];
+
+const SCEN=[
+ {id:"explore",name:"Free exploration",steps:[]},
+ {id:"answer",name:"Normal automated answer",steps:[
+  {n:["u","fe","dev"],e:["u-fe","fe-dev"],t:"The customer sends a message. The Frontend passes it, with the selected <code>session_id</code>, to the Dev Backend."},
+  {n:["dev","v2"],e:["dev-v2"],t:"The Dev Backend calls <code>POST /api/v2/chat</code> with a trusted <code>customer_reference</code>."},
+  {n:["v2","core","pg"],e:["v2-core","core-pg"],t:"Guards check length, rate, abuse and prompt leaks. Idle sessions are closed and the owned session is resolved in PostgreSQL."},
+  {n:["core","v2","dev","fe"],e:["v2-dev","fe-dev"],t:"The <code>session</code> SSE event is always sent first. The Dev Backend forwards it without buffering."},
+  {n:["core","agent","llm"],e:["core-agent","agent-llm"],t:"The LangGraph agent sends the conversation and its tools to Azure OpenAI, which answers or asks for a tool call."},
+  {n:["agent","api","com","sql"],e:["agent-api","api-com","agent-sql"],t:"Read tools fetch orders, tracking or refunds: through the enterprise HTTP API in production, or directly from SQL Server outside production."},
+  {n:["agent","pg","v2","dev","fe","u"],e:["agent-pg","v2-dev","fe-dev","u-fe"],t:"<code>token</code>, <code>cards</code> and <code>end</code> stream back. The turn is stored in <code>chat_turn_analytics</code>; <code>end</code> carries the <code>turn_id</code> used for feedback."}
+ ]},
+ {id:"handoff",name:"Ticket creation → Zendesk handoff",steps:[
+  {n:["u","fe","dev","v2"],e:["u-fe","fe-dev","dev-v2"],t:"The customer asks for help the bot cannot give. The message reaches <code>/api/v2/chat</code> with the current <code>session_id</code>."},
+  {n:["core","pg"],e:["v2-core","core-pg"],t:"The service closes idle sessions and resolves the customer's owned session."},
+  {n:["agent","llm"],e:["core-agent","agent-llm"],t:"Azure OpenAI decides human support is needed and calls <code>create_support_ticket(subject, body)</code>."},
+  {n:["v2","dev","fe"],e:["v2-dev","fe-dev"],t:"The agent pauses. <code>confirmation_required</code> streams to the Frontend, which shows a confirm control."},
+  {n:["u","fe","dev","v2"],e:["u-fe","fe-dev","dev-v2"],t:"The customer confirms. The next turn uses the same <code>session_id</code>, and the resume value must be “Yes”."},
+  {n:["agent","api"],e:["agent-api"],t:"The agent calls <code>POST /api/order/v1/postticket.json</code> with <code>customer_reference</code>, <code>subject + [REF:…]</code> and <code>body</code>."},
+  {n:["api","zd"],e:["api-zd"],t:"The API returns <code>success</code> and <code>data = ticket_id</code>. How it reaches Zendesk is still to confirm in deployment."},
+  {n:["agent","core","pg"],e:["agent-pg","core-pg"],t:"A <code>ticket_events</code> row is inserted with <code>outcome = created</code>, and the session closes with <code>reason = ticket_created</code>."},
+  {n:["v2","dev","fe"],e:["v2-dev","fe-dev"],t:"A closing token, <code>conversation_closed</code> and <code>end</code> stream out. The Frontend locks the bot composer."},
+  {n:["dev","route","zd"],e:["dev-route","route-zd"],t:"The router sees <code>closed_reason = ticket_created</code> and opens the Zendesk conversation by <code>ticket_id</code>."},
+  {n:["ha","zd","dev","fe","u"],e:["zd-ha","dev-zd","fe-dev","u-fe"],t:"A human agent replies in Zendesk. The Dev Backend relays messages both ways; the chatbot is no longer involved."},
+  {n:["ha","zd","dev"],e:["zd-ha","dev-zd"],t:"The agent closes the ticket and Zendesk reports the status. The bot session does not change: it has been terminal since the ticket was created."}
+ ]},
+ {id:"list",name:"Open the list and route a conversation",steps:[
+  {n:["u","fe","dev","v2"],e:["u-fe","fe-dev","dev-v2"],t:"The customer opens their conversations. The Dev Backend calls <code>POST /api/v2/conversations</code>."},
+  {n:["core","hist","pg"],e:["v2-core","core-hist","hist-pg","core-pg"],t:"Lazy inactivity closure runs first, then the list is built newest first with a ~60-character preview, <code>closed_reason</code> and ticket metadata."},
+  {n:["v2","dev","fe"],e:["v2-dev","fe-dev"],t:"The Frontend shows each row with its last message, date, status and <code>ticket_id ?? conversation_ref</code>."},
+  {n:["fe","dev","route"],e:["fe-dev","dev-route"],t:"The customer selects a conversation and the Dev Backend applies the routing rule."},
+  {n:["route","v2"],e:["route-v2"],t:"Open with no ticket: load <code>/api/v2/history</code> and continue with the same <code>session_id</code>."},
+  {n:["route","fe"],e:["fe-dev"],t:"Closed for inactivity: show a read-only bot transcript and offer “New conversation”. Never route it to Zendesk."},
+  {n:["route","zd","dev"],e:["route-zd","dev-zd"],t:"Closed with <code>ticket_created</code>: open the Zendesk-backed human channel using <code>ticket_id</code>."}
+ ]},
+ {id:"new",name:"Start a new conversation",steps:[
+  {n:["fe"],e:[],t:"The customer taps “New conversation”. The Frontend only clears the selected <code>session_id</code>; no API call is made."},
+  {n:["u","fe","dev","v2"],e:["u-fe","fe-dev","dev-v2"],t:"The first message goes to <code>/api/v2/chat</code> without a <code>session_id</code>."},
+  {n:["core","pg"],e:["v2-core","core-pg"],t:"The chatbot creates the session and an eight-digit <code>conversation_ref</code>."},
+  {n:["v2","dev","fe"],e:["v2-dev","fe-dev"],t:"The first SSE event is <code>session</code> with the new ID. Keep it before allowing a second message."}
+ ]},
+ {id:"idle",name:"Inactivity closure",steps:[
+  {n:["u","fe"],e:[],t:"The customer stops replying. After 40 minutes (default) nothing happens yet: closure is lazy."},
+  {n:["dev","v2"],e:["fe-dev","dev-v2"],t:"A later <code>/chat</code>, <code>/history</code>, <code>/history/by-reference</code> or <code>/conversations</code> call arrives for that customer."},
+  {n:["core","pg"],e:["v2-core","core-pg"],t:"Idle time is measured from the last stored V2 turn, not page reads. The session is closed for inactivity."},
+  {n:["dev","route"],e:["v2-dev","dev-route"],t:"The conversation now routes to <code>READ_ONLY_BOT_HISTORY</code>. It must not go to Zendesk and cannot be reopened."},
+  {n:["fe","u"],e:["u-fe"],t:"The customer starts a new conversation, which gets a fresh session."}
+ ]}
+];
+
+/* ---------- MAP RENDER ---------- */
+const svg=$("#arch");
+const defs=el("defs",{},svg);
+[["a","arrow"],["h","arrow-hot"],["s","arrow-sel"]].forEach(([id,c])=>{
+  const m=el("marker",{id:"m-"+id,viewBox:"0 0 10 10",refX:"9",refY:"5",markerWidth:"7",markerHeight:"7",orient:"auto-start-reverse"},defs);
+  el("path",{d:"M0 0 L10 5 L0 10 z",class:c},m);
+});
+ZONES.forEach(z=>{const g=el("g",{class:"zone "+z.cls},svg);el("rect",{x:z.x,y:z.y,width:z.w,height:z.h,rx:14},g);const t=el("text",{x:z.x+12,y:z.y+20},g);t.textContent=z.label;});
+const edgeG=el("g",{},svg), nodeG=el("g",{},svg);
+const edgeEls={},nodeEls={};
+EDGES.forEach(e=>{
+  const dashed=e.dash||e.ev!=="v";
+  const g=el("g",{class:"edge"+(dashed?" dash":""),"data-id":e.id},edgeG);
+  const p=el("path",{d:e.d,class:"v","marker-end":"url(#m-a)"},g);
+  if(e.two)p.setAttribute("marker-start","url(#m-a)");
+  el("path",{d:e.d,class:"hit"},g);
+  if(e.l&&e.lx){const t=el("text",{x:e.lx,y:e.ly},g);t.textContent=e.l;}
+  const tt=el("title",{},g);tt.textContent=NODES[e.a].t+" → "+NODES[e.b].t+(e.l?": "+e.l:"");
+  g.addEventListener("click",()=>selectEdge(e.id));
+  edgeEls[e.id]={g,p,e};
+});
+Object.entries(NODES).forEach(([id,n])=>{
+  const g=el("g",{class:"node","data-id":id,tabindex:"0",role:"button","aria-label":n.t},nodeG);
+  if(n.shape==="diamond"){
+    const cx=n.x+n.w/2,cy=n.y+n.h/2;
+    el("path",{class:"box",d:`M${cx} ${n.y} L${n.x+n.w} ${cy} L${cx} ${n.y+n.h} L${n.x} ${cy} Z`},g);
+  }else if(n.shape==="cyl"){
+    const r=12;
+    el("path",{class:"box",d:`M${n.x} ${n.y+r} A${n.w/2} ${r} 0 0 1 ${n.x+n.w} ${n.y+r} L${n.x+n.w} ${n.y+n.h-r} A${n.w/2} ${r} 0 0 1 ${n.x} ${n.y+n.h-r} Z`},g);
+    el("path",{class:"box",d:`M${n.x} ${n.y+r} A${n.w/2} ${r} 0 0 0 ${n.x+n.w} ${n.y+r}`,style:"fill:none"},g);
+  }else{
+    el("rect",{class:"box",x:n.x,y:n.y,width:n.w,height:n.h,rx:n.shape==="pill"?n.h/2:10},g);
+  }
+  // zone tick
+  if(!n.shape){const c={bot:"var(--bot)",ext:"var(--ext)",plat:"var(--plat)",ent:"var(--ent)",exp:"var(--muted)"}[n.zone];el("rect",{x:n.x+10,y:n.y+10,width:18,height:3,rx:1.5,style:"fill:"+c},g);}
+  const cx=n.x+n.w/2, cy=n.y+n.h/2+(n.s?-4:4)+(n.shape==="cyl"?6:0);
+  const t=el("text",{class:"t",x:cx,y:cy,"text-anchor":"middle"},g);t.textContent=n.t;
+  if(n.s){const s=el("text",{class:"s",x:cx,y:cy+17,"text-anchor":"middle"},g);s.textContent=n.s;}
+  g.addEventListener("click",()=>selectNode(id));
+  g.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();selectNode(id);}});
+  nodeEls[id]=g;
+});
+
+/* ---------- PANEL ---------- */
+const panel=$("#panel");
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const fmt=s=>esc(s).replace(/(\/api\/[\w\/.\-…]+|[a-z]+_[a-z_]+|session_id|ticket_id|\[REF:…\])/g,"<code>$1</code>");
+function list(arr,cls){return `<ul${cls?` class="${cls}"`:""}>`+arr.map(x=>`<li>${fmt(x)}</li>`).join("")+"</ul>";}
+function intro(){
+  panel.innerHTML=`<div class="chips"><span class="chip c-hot">Start here</span></div>
+  <h2>Explore the system</h2>
+  <p class="sum">Click any component to see what it owns, its interfaces and its open risks. Click a line to see the connection. Pick a scenario above to follow a request step by step.</p>
+  <h3>What each layer owns</h3>
+  <ul>
+   <li><b>Frontend</b>: UI, cards, confirmations, composer state</li>
+   <li><b>Dev Backend</b>: identity, proxy, SSE, bot ↔ Zendesk routing</li>
+   <li><b>Chatbot V2</b>: automated conversation, AI, bot history, tickets</li>
+   <li><b>Enterprise API</b>: commerce reads, cancel, return, ticket adapter</li>
+   <li><b>Zendesk</b>: human ticket, agent, human messages, closure</li>
+   <li><b>PostgreSQL</b>: sessions, checkpoints, transcript, tickets, audit</li>
+  </ul>
+  <h3>Jump to</h3>
+  <div class="linkrow">${["dev","v2","agent","zd","api","pg"].map(k=>`<button data-go="${k}">${NODES[k].t}</button>`).join("")}</div>`;
+}
+function selectNode(id){
+  clearSel();nodeEls[id].classList.add("sel");
+  const n=NODES[id];const [zc,zl]=ZN[n.zone];const [ec,el_]=EV[n.ev];
+  const conns=EDGES.filter(e=>e.a===id||e.b===id);
+  panel.innerHTML=`<div class="chips"><span class="chip ${zc}">${zl}</span><span class="chip ${ec}">${el_}</span></div>
+  <h2>${esc(n.t)}</h2><p class="sum">${fmt(n.sum)}</p>
+  ${n.owns?`<h3>${n.zone==="plat"&&id==="pg"?"Tables":"Owns"}</h3>`+list(n.owns):""}
+  ${n.code?`<h3>Rule</h3><pre>${esc(n.code)}</pre>`:""}
+  ${n.rules?`<h3>Rules to respect</h3>`+list(n.rules):""}
+  ${n.gaps?`<h3>Open risks</h3>`+list(n.gaps,"warn"):""}
+  ${n.files?`<h3>Code</h3><ul class="files">${n.files.map(f=>`<li>${esc(f)}</li>`).join("")}</ul>`:""}
+  <h3>Connected to</h3><div class="linkrow">${[...new Set(conns.map(e=>e.a===id?e.b:e.a))].map(k=>`<button data-go="${k}">${NODES[k].t}</button>`).join("")}</div>
+  ${n.tab?`<h3>More detail</h3><div class="linkrow"><button data-tab="${n.tab}">Open ${({api:"API contract",lifecycle:"Lifecycle",data:"Data model",decisions:"Decisions & gaps"})[n.tab]} →</button></div>`:""}`;
+  if(!playing&&curScen===0){dimAll(false);conns.forEach(e=>edgeEls[e.id].g.classList.add("sel"));conns.forEach(e=>edgeEls[e.id].p.setAttribute("marker-end","url(#m-s)"));}
+}
+function selectEdge(id){
+  clearSel();const {g,e}=edgeEls[id];g.classList.add("sel");edgeEls[id].p.setAttribute("marker-end","url(#m-s)");
+  nodeEls[e.a].classList.add("sel");nodeEls[e.b].classList.add("sel");
+  const [ec,el_]=EV[e.ev];
+  panel.innerHTML=`<div class="chips"><span class="chip ${ec}">${el_}</span><span class="chip c-exp">${e.two?"Two-way":"One-way"}</span></div>
+  <h2>${esc(NODES[e.a].t)} → ${esc(NODES[e.b].t)}</h2>
+  <p class="sum">${e.l?fmt(e.l):"Direct dependency."}</p>
+  ${e.ev==="v"?`<p class="hint">This connection is implemented in the chatbot repository.</p>`:e.ev==="c"?`<p class="hint">The create-ticket endpoint may feed Zendesk, but the deployment mapping must be confirmed.</p>`:`<p class="hint">Described by the product team; implemented outside this repository.</p>`}
+  <h3>Endpoints</h3><div class="linkrow"><button data-go="${e.a}">${NODES[e.a].t}</button><button data-go="${e.b}">${NODES[e.b].t}</button></div>`;
+}
+function clearSel(){
+  Object.values(nodeEls).forEach(g=>g.classList.remove("sel"));
+  Object.values(edgeEls).forEach(o=>{o.g.classList.remove("sel");if(!o.g.classList.contains("hot"))o.p.setAttribute("marker-end","url(#m-a)");});
+}
+panel.addEventListener("click",ev=>{
+  const b=ev.target.closest("button");if(!b)return;
+  if(b.dataset.go)selectNode(b.dataset.go);
+  if(b.dataset.tab)showTab(b.dataset.tab);
+});
+
+/* ---------- FILTER ---------- */
+let filter="all";
+function isRepo(n){return n.zone==="bot"||n.zone==="plat"||n.zone==="ent";}
+function dimAll(force){
+  Object.entries(nodeEls).forEach(([id,g])=>{
+    const n=NODES[id];let d=false;
+    if(filter==="repo")d=!(n.ev==="v");
+    if(filter==="out")d=n.ev==="v";
+    g.classList.toggle("dim",d);
+  });
+  Object.values(edgeEls).forEach(o=>{
+    let d=false;if(filter==="repo")d=o.e.ev!=="v";if(filter==="out")d=o.e.ev==="v";
+    o.g.classList.toggle("dim",d);
+  });
+}
+$("#filter").addEventListener("click",ev=>{
+  const b=ev.target.closest("button");if(!b)return;
+  filter=b.dataset.f;[...$("#filter").children].forEach(x=>x.setAttribute("aria-pressed",x===b));
+  if(curScen)renderStep();else dimAll();
+});
+
+/* ---------- SCENARIOS ---------- */
+let curScen=0,step=0,playing=null;
+const sel=$("#scenario");
+SCEN.forEach((s,i)=>{const o=document.createElement("option");o.value=i;o.textContent=s.name+(s.steps.length?` (${s.steps.length} steps)`:"");sel.appendChild(o);});
+sel.addEventListener("change",()=>{stopPlay();curScen=+sel.value;step=0;if(curScen){$("#scen").hidden=false;$("#dots").hidden=false;buildDots();renderStep();}else{$("#scen").hidden=true;$("#dots").hidden=true;resetHot();dimAll();intro();}});
+function buildDots(){const d=$("#dots");d.innerHTML="";SCEN[curScen].steps.forEach((_,i)=>{const b=document.createElement("button");b.setAttribute("aria-label","Step "+(i+1));b.onclick=()=>{stopPlay();step=i;renderStep();};d.appendChild(b);});}
+function resetHot(){
+  Object.values(nodeEls).forEach(g=>g.classList.remove("hot","dim"));
+  Object.values(edgeEls).forEach(o=>{o.g.classList.remove("hot","dim");o.p.setAttribute("marker-end","url(#m-a)");if(o.e.two)o.p.setAttribute("marker-start","url(#m-a)");});
+}
+function renderStep(){
+  clearSel();resetHot();
+  const s=SCEN[curScen],st=s.steps[step];
+  Object.entries(nodeEls).forEach(([id,g])=>{if(st.n.includes(id))g.classList.add("hot");else g.classList.add("dim");});
+  Object.values(edgeEls).forEach(o=>{if(st.e.includes(o.e.id)){o.g.classList.add("hot");o.p.setAttribute("marker-end","url(#m-h)");if(o.e.two)o.p.setAttribute("marker-start","url(#m-h)");}else o.g.classList.add("dim");});
+  $("#sn").textContent=step+1;$("#st").textContent=s.steps.length;$("#stext").innerHTML=st.t;
+  $("#prev").disabled=step===0;$("#next").textContent=step===s.steps.length-1?"Restart":"Next step";
+  [...$("#dots").children].forEach((b,i)=>b.classList.toggle("on",i<=step));
+  // panel shows primary node of step
+  const focus=st.n[st.n.length>1?1:0];
+  const n=NODES[focus];
+  panel.innerHTML=`<div class="chips"><span class="chip c-hot">${esc(s.name)}</span></div>
+   <h2>Step ${step+1}</h2><p class="sum">${st.t}</p>
+   <h3>Components involved</h3><div class="linkrow">${st.n.map(k=>`<button data-go="${k}">${NODES[k].t}</button>`).join("")}</div>
+   <p class="hint" style="margin-top:14px">Click a component to read its details; the scenario keeps its place.</p>`;
+}
+$("#next").onclick=()=>{stopPlay();const L=SCEN[curScen].steps.length;step=(step+1)%L;renderStep();};
+$("#prev").onclick=()=>{stopPlay();if(step>0){step--;renderStep();}};
+$("#play").onclick=()=>{if(playing){stopPlay();return;}$("#play").textContent="Pause";playing=setInterval(()=>{const L=SCEN[curScen].steps.length;if(step>=L-1){stopPlay();return;}step++;renderStep();},3200);};
+function stopPlay(){if(playing){clearInterval(playing);playing=null;}$("#play").textContent="Play";}
+
+/* ---------- TABS ---------- */
+function showTab(v){
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===v));
+  document.querySelectorAll("section.view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
+  window.scrollTo({top:$("nav.tabs").offsetTop-4,behavior:"smooth"});
+}
+document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.view)));
+const hash=(location.hash||"").slice(1);if(["map","routing","lifecycle","api","data","decisions","evidence"].includes(hash))showTab(hash);
+
+/* ---------- ROUTING SIM ---------- */
+const R={closed:"false",reason:"null",tid:"yes"};
+function segBind(id,key){$(id).addEventListener("click",ev=>{const b=ev.target.closest("button");if(!b)return;R[key]=b.dataset.v;[...$(id).children].forEach(x=>x.setAttribute("aria-pressed",x===b));simRun();});}
+segBind("#r-closed","closed");segBind("#r-tid","tid");
+$("#r-reason").addEventListener("change",e=>{R.reason=e.target.value;if(R.reason!=="null"){R.closed="true";[...$("#r-closed").children].forEach(x=>x.setAttribute("aria-pressed",x.dataset.v==="true"));}simRun();});
+function simRun(){
+  const o=$("#r-out");let cls,r,p;
+  if(R.reason==="ticket_created"){
+    if(R.tid==="yes"){cls="zd";r="ZENDESK";p="Open the Zendesk-backed human channel with ticket_id. The bot conversation is terminal.";}
+    else{cls="rec";r="HANDOFF_RECONCILIATION";p="A ticket was created but no scalar ID came back. Reconcile with the integration; do not send the customer back to the closed bot conversation.";}
+  }else if(R.closed==="true"){cls="ro";r="READ_ONLY_BOT_HISTORY";p="Show the bot transcript read-only and offer “New conversation”. Inactivity closures never go to Zendesk.";}
+  else{cls="bot";r="CHATBOT_V2";p="Load /api/v2/history and continue with the same session_id.";}
+  if(R.closed==="false"&&R.reason!=="null")p+=" (An open conversation should not carry a closed_reason.)";
+  o.className="result "+cls;o.innerHTML=`<div class="r">${r}</div><p>${p}</p>`;
+}
+simRun();
+
+/* ---------- STATE MACHINE ---------- */
+const STATES={
+ NotCreated:{x:20,y:140,w:140,cls:"",d:"No session exists yet. A conversation is created only by the first /chat call without a session_id."},
+ BotOpen:{x:220,y:140,w:140,cls:"",d:"Automated conversation in progress: chat, tools, feedback and rating all happen here."},
+ AwaitingConfirmation:{x:420,y:40,w:190,cls:"",d:"The agent has paused on a cancel, return or ticket interrupt and waits for the customer's confirmation in the same session."},
+ HandoffClosed:{x:650,y:40,w:150,cls:"term",d:"Terminal for the chatbot: closed_reason = ticket_created. The Dev Backend must route to Zendesk."},
+ HumanActive:{x:840,y:40,w:140,cls:"extst",d:"Outside this repository. Zendesk owns the transcript and status while a human agent helps the customer."},
+ TicketClosed:{x:840,y:230,w:140,cls:"extst",d:"The Zendesk agent closed the ticket. The bot session is unaffected; it was already terminal."},
+ InactivityClosed:{x:420,y:230,w:190,cls:"term",d:"Closed after the idle threshold (default 40 min), detected lazily on a later V2 read or chat. Read-only; never routed to Zendesk."}
+};
+const TR=[
+ {a:"NotCreated",b:"BotOpen",d:"M160 166 L220 166",l:"first /chat",lx:165,ly:158},
+ {a:"BotOpen",b:"BotOpen",d:"M270 140 C250 95 330 95 310 140",l:"chat · tools · rating",lx:236,ly:90},
+ {a:"BotOpen",b:"AwaitingConfirmation",d:"M360 152 C395 152 390 72 420 66",l:"interrupt",lx:360,ly:108},
+ {a:"AwaitingConfirmation",b:"BotOpen",d:"M470 92 C470 140 420 178 360 178",l:"declined · failed · done",lx:440,ly:140},
+ {a:"AwaitingConfirmation",b:"HandoffClosed",d:"M610 66 L650 66",l:"ticket ok",lx:604,ly:58},
+ {a:"BotOpen",b:"InactivityClosed",d:"M300 192 C300 250 380 256 420 256",l:"idle > 40 min",lx:300,ly:240},
+ {a:"HandoffClosed",b:"HumanActive",d:"M800 66 L840 66",l:"route",lx:804,ly:58},
+ {a:"HumanActive",b:"TicketClosed",d:"M910 92 L910 230",l:"agent closes",lx:918,ly:165},
+ {a:"InactivityClosed",b:"NotCreated",d:"M420 270 C300 300 90 290 90 192",l:"new conversation",lx:180,ly:300},
+ {a:"TicketClosed",b:"NotCreated",d:"M910 282 C910 335 60 335 60 192",l:"new conversation",lx:560,ly:328}
+];
+const sm=$("#sm");const smDefs=el("defs",{},sm);
+[["a","arrow"],["h","arrow-hot"]].forEach(([id,c])=>{const m=el("marker",{id:"sm-"+id,viewBox:"0 0 10 10",refX:"9",refY:"5",markerWidth:"7",markerHeight:"7",orient:"auto"},smDefs);el("path",{d:"M0 0 L10 5 L0 10 z",class:c},m);});
+const trEls=TR.map(t=>{const g=el("g",{class:"tr"},sm);const p=el("path",{d:t.d,"marker-end":"url(#sm-a)"},g);const x=el("text",{x:t.lx,y:t.ly},g);x.textContent=t.l;return {g,p,t};});
+const stEls={};
+Object.entries(STATES).forEach(([k,s])=>{
+  const g=el("g",{class:"st "+s.cls,tabindex:"0",role:"button","aria-label":k},sm);
+  el("rect",{x:s.x,y:s.y,width:s.w,height:52,rx:26},g);
+  const t=el("text",{x:s.x+s.w/2,y:s.y+31,"text-anchor":"middle"},g);t.textContent=k.replace(/([a-z])([A-Z])/g,"$1 $2");
+  g.addEventListener("click",()=>pickState(k));g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pickState(k);}});
+  stEls[k]=g;
+});
+function pickState(k){
+  Object.values(stEls).forEach(g=>g.classList.remove("sel"));stEls[k].classList.add("sel");
+  trEls.forEach(o=>{const h=o.t.a===k||o.t.b===k;o.g.classList.toggle("hot",h);o.p.setAttribute("marker-end",h?"url(#sm-h)":"url(#sm-a)");});
+  const ins=TR.filter(t=>t.b===k&&t.a!==k),outs=TR.filter(t=>t.a===k);
+  const nm=x=>x.replace(/([a-z])([A-Z])/g,"$1 $2");
+  $("#sm-info").innerHTML=`<h3 style="font-size:18px;margin-bottom:6px">${nm(k)}</h3><p style="margin:0 0 10px;color:var(--muted);font-size:14.5px">${fmt(STATES[k].d)}</p>
+  ${ins.length?`<div class="eyebrow" style="margin-top:10px">Entered from</div><ul style="margin:4px 0;padding-left:18px;font-size:14px">${ins.map(t=>`<li>${nm(t.a)}: ${esc(t.l)}</li>`).join("")}</ul>`:""}
+  ${outs.length?`<div class="eyebrow" style="margin-top:10px">Leads to</div><ul style="margin:4px 0;padding-left:18px;font-size:14px">${outs.map(t=>`<li>${nm(t.b)}: ${esc(t.l)}</li>`).join("")}</ul>`:""}`;
+}
+pickState("BotOpen");
+
+/* ---------- API ---------- */
+const EPS=[
+ ["/chat","message, customer_reference, session_id?","text/event-stream","Starts a conversation when session_id is absent; otherwise continues an owned, open conversation."],
+ ["/history","session_id, customer_reference","messages[], session_id, closed","Loads one V2 bot transcript. Returns 404 for unknown, foreign or pre-V2 sessions."],
+ ["/history/by-reference","customer_reference","latest messages[], session_id?, closed","Recovery path when the caller lost the latest session ID. Never creates a session."],
+ ["/conversations","customer_reference, limit = 50 (1–200)","conversations[] newest first","Feeds the Frontend list and the routing metadata used after a reload."],
+ ["/feedback","turn_id, feedback, customer_reference?","status, optional callback_offer","Stores like / dislike. A dislike-streak escalation is available behind a feature flag."],
+ ["/rating","customer_reference, rating (1–10), comment?, session_id?","status","Rates a selected or the latest conversation. Closed conversations can be rated."]
+];
+const epl=$("#eplist"),epd=$("#ep");
+EPS.forEach((e,i)=>{const b=document.createElement("button");b.textContent="POST "+e[0];b.setAttribute("aria-pressed",i===0);b.onclick=()=>{[...epl.children].forEach(x=>x.setAttribute("aria-pressed",x===b));showEp(i);};epl.appendChild(b);});
+function showEp(i){const e=EPS[i];epd.innerHTML=`<div><h4>Request</h4><p>${fmt(e[1])}</p></div><div><h4>Response</h4><p>${fmt(e[2])}</p></div><div><h4>Role in the experience</h4><p>${fmt(e[3])}</p></div>`;}
+showEp(0);
+const SSE=[
+ ["session","Conversation ID; always first","Persist it before accepting another message",1],
+ ["token","Partial assistant text","Stream to the UI"],
+ ["tool_start / tool_end","Tool execution lifecycle","Optional progress indicator"],
+ ["cards","Structured order, return or refund payload","Render domain cards"],
+ ["confirmation_required","Cancel, return or ticket needs explicit confirmation","Show confirmation UI, resume in the same session",1],
+ ["rate_limited","Window, burst or penalty block","Disable input and retry using the supplied timing"],
+ ["conversation_closed","Bot conversation is terminal","Lock the bot composer and route using reason",1],
+ ["error","Busy or internal error","Show recoverable error behavior"],
+ ["end","Turn complete; carries turn_id?, session_id","Finalize the message and enable feedback"]
+];
+$("#sse").innerHTML=SSE.map(s=>`<div class="ev${s[3]?" k":""}"><code>${s[0]}</code><p>${fmt(s[1])}</p><small>→ ${fmt(s[2])}</small></div>`).join("");
+
+/* ---------- DATA ---------- */
+const TABLES={
+ chat_customer_sessions:{c:[["session_id","text","pk"],["customer_reference","text"],["conversation_ref","text UK"],["created_at","ts"],["last_seen_at","ts"],["closed_at","ts"],["closed_reason","text"]],d:"Bot session registry. Source of truth for conversation identity and closed state; the hub every other table joins to."},
+ chat_turn_analytics:{c:[["id","bigint","pk"],["session_id","text","fk"],["user_message","text"],["assistant_message","text"],["cards_payload","jsonb"],["feedback","text"],["conv_flag","bool"],["status","text"],["token_and_latency_metrics","int"]],d:"One row per turn: the bot transcript, cards, feedback and BI telemetry. Source of truth for bot messages."},
+ ticket_events:{c:[["id","bigint","pk"],["session_id","text","fk"],["subject","text"],["body","text"],["outcome","text"],["ticket_id","text"],["api_response_message","text"]],d:"Every ticket attempt and its outcome (created, declined, failed, missing_info). Source of truth for the ticket creation result."},
+ chat_session_ratings:{c:[["id","bigint","pk"],["session_id","text","fk"],["rating","smallint"],["comment","text"]],d:"1–10 conversation ratings from /rating, including for closed conversations."},
+ feedback_ticket_escalations:{c:[["id","bigint","pk"],["session_id","text","fk"],["status","text"],["ticket_event_id","bigint","fk"]],d:"Dislike-streak escalations (feature-flagged), optionally linked to a ticket_events row."},
+ external_api_events:{c:[["id","bigint","pk"],["session_id","text","fk"],["action_name","text"],["api_input_payload","jsonb"],["api_output_payload","jsonb"],["status","text"]],d:"Audit trail of enterprise action calls: cancel, return and ticket requests with their payloads."},
+ langgraph_checkpoints:{c:[["thread_id","= session_id","fk"],["state_and_interrupts","json"]],d:"LangGraph state per thread, including a pending confirmation. This is how a confirmation resumes on the next turn."},
+ chat_rate_limit_buckets:{c:[["customer_reference","text"],["rolling window","state"],["burst","state"],["abuse strikes","state"],["penalty block","state"]],d:"Per-customer rolling-window, burst, abuse-strike and penalty-block state. Keyed by customer, not session."}
+};
+const tw=$("#tables"),ti=$("#tinfo");
+Object.entries(TABLES).forEach(([k,t],i)=>{
+  const b=document.createElement("button");b.className="tbl";b.type="button";
+  b.innerHTML=`<span class="h">${k}</span><ul>${t.c.map(c=>`<li class="${c[2]||""}"><span>${c[0]}</span><i>${c[1]}</i></li>`).join("")}</ul>`;
+  b.onclick=()=>{[...tw.children].forEach(x=>x.classList.toggle("sel",x===b));ti.innerHTML=`<div class="src" style="border-left-color:var(--plat)"><b><code>${k}</code></b><span>${fmt(t.d)}</span></div>`;};
+  tw.appendChild(b);if(i===0)b.click();
+});
+
+/* ---------- DECISIONS ---------- */
+const DEC=[
+ ["Canonical routing owner","Confirm the Dev Backend, not the Frontend, is the only component deciding chatbot versus Zendesk routing.","dev"],
+ ["Ticket adapter ownership","Is EXTERNAL_API_BASE_URL/api/order/v1/postticket.json implemented by the Dev Backend or another integration service, and does it create the Zendesk ticket synchronously?","api"],
+ ["Human-channel contract","Define endpoints or webhooks to send customer messages, receive human replies, read the human transcript and receive ticket-closed status.","zd"],
+ ["Unified history","One timeline or two clearly separated phases? The chatbot cannot store or return the Zendesk phase today.","fe"],
+ ["Identity and authorization","V2 accepts plain JSON, CORS is broad, and no service auth is visible. The Dev Backend must send a trusted customer_reference; the chatbot should be private or protected.","v2"],
+ ["Ticket idempotency","The create-ticket call is synchronous with no idempotency key. Define retry and reconciliation for timeouts to avoid duplicates or unknown success.","api"],
+ ["Closure consistency","Monitor the live conversation_closed event and persisted closed_at as one invariant. A DB failure during closure is only logged while the stream still reports closure.","core"]
+];
+$("#dec").innerHTML=DEC.map((d,i)=>`<div class="d"><span class="num">Decision ${i+1} of 7</span><h3>${esc(d[0])}</h3><p>${fmt(d[1])}</p><button class="btn" style="align-self:flex-start;margin-top:8px" data-node="${d[2]}">Show on map: ${NODES[d[2]].t} →</button></div>`).join("");
+$("#dec").addEventListener("click",ev=>{const b=ev.target.closest("button[data-node]");if(!b)return;showTab("map");sel.value=0;sel.dispatchEvent(new Event("change"));selectNode(b.dataset.node);});
+
+/* ---------- EVIDENCE ---------- */
+const EVID=[["V2 routes and orchestration","app/api/v2/endpoints/chat.py"],["V2 request/response models","app/schemas/api_v2.py, app/schemas/api.py"],["Conversation list/history projection","app/services/history.py"],["Streaming and SSE closure event","app/services/chat_stream.py"],["Agent graph and ticket confirmation","app/agent/graph.py"],["Commerce/action/ticket tools","app/agent/tools/tools.py"],["Production API vs non-production SQL","app/agent/tools/data_source/"],["Sessions, turns, tickets, ratings, audit","app/database/bi_store.py"],["Rate and abuse controls","app/database/rate_limit.py"],["LLM selection and fallback","app/agent/llm_factory.py"],["App wiring and Postgres checkpointer","app/main.py"]];
+$("#evid").innerHTML=EVID.map(e=>`<tr><td style="white-space:normal">${e[0]}</td><td><code>${e[1]}</code></td></tr>`).join("");
+
+intro();dimAll();
+})();
+</script>
+
+</body>
+</html>
